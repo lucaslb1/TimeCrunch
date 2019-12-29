@@ -8,7 +8,7 @@ let debugMode = true;
 //--------------------------------------------------------Constants
 
 //The default long and short times in minutes
-const defaultTimes = [.5, .1];
+const defaultTimes = [25, 5];
 
 //The default title displayed when timer is not running
 const defaultTitle = document.title;
@@ -94,7 +94,7 @@ function startTimer (){
             timeRemaining -= delta;
             if(timeRemaining<=0){
                 updateTime(0);
-                timerEnd()
+                timerEnd();
             } else {
                 updateTime(timeRemaining)
             }
@@ -110,8 +110,10 @@ function pauseTimer(){
 
     if(intervalID && isRunning) {
         isRunning = false;
+
         updateTitleTime();
         console.log("Paused interval");
+
         clearInterval(intervalID);
         intervalID = null
     }
@@ -119,10 +121,10 @@ function pauseTimer(){
 
 // Called when timer reaches 00:00
 function timerEnd(){
-    clearInterval(intervalID);
-    intervalID=null;
+    pauseTimer();
     playSound(1);
-    timerState = (timerState+1) % 2;
+    timerState = (timerState+1) % defaultTimes.length;
+    resetTimer();
     startTimer();
 }
 
@@ -130,7 +132,7 @@ function timerEnd(){
 // Resets timer
 function resetTimer(){
     if(!isRunning){
-        timeRemaining = defaultTimes[0] * 60 * 1000;
+        timeRemaining = defaultTimes[timerState] * 60 * 1000;
         updateTime(timeRemaining);
 
     }
